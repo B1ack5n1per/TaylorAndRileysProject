@@ -17,8 +17,10 @@ public class LocalMenu {
 	public static Stage window = new Stage();
 	
 	public static int display() {
+		Font font = new Font("Arial", 40);
 		
 		Label title = new Label("Choose Your Map!");
+		title.setFont(font);
 	
 		Button b1 = new Button();
 		ImageView map1 = new ImageView(new Image("Assets/BasicTestMap.png"));
@@ -77,9 +79,8 @@ public class LocalMenu {
 		b8.setOnAction(new MapButtonHandler(7));
 	
 		Button ran = new Button("Random!");
-		Font font = new Font("Arial", 40);
 		ran.setFont(font);
-		title.setFont(font);
+		ran.setOnAction(new MapButtonHandler((int) Math.floor(Math.random() * 7)));
 		
 		GridPane maps = new GridPane();
 		maps.add(b1, 0, 0);

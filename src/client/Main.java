@@ -44,7 +44,6 @@ public class Main extends Application {
 				return;	
 		}
 		
-		
 		// Canvas
 		Canvas canvas = new Canvas(900, 600);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
