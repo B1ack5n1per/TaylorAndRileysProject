@@ -1,0 +1,5 @@
+package client;
+
+public enum TileType {
+	MOUNTAIN, ROAD, GRASS, BUILDINGSMALL, BUILDINGLARGE, FACTORY, FOREST, FARM
+}

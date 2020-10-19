@@ -1,6 +1,10 @@
 package client;
 
 import java.util.LinkedList;
+
+import org.json.simple.parser.JSONParser;
+import org.json.simple.JSONObject;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -22,6 +26,7 @@ public class Main extends Application {
 	private static String username = "";
 	private static ChatController chatController;
 	public static double height = 600, width = 1200;
+	public static Map map;
 
 	
 	public static void main(String[] args) {
@@ -36,7 +41,7 @@ public class Main extends Application {
 		
 		switch(gameType) {
 			case LOCAL:
-				System.out.println(LocalMenu.display());
+				map = new Map((JSONObject) new JSONParser().parse("Assets/MapData.json")) ,LocalMenu.display()));
 				break;
 			case ONLINE:
 				break;

@@ -1,0 +1,10 @@
+{
+	"maps": [
+		[
+		[{"type": "MOUNTAIN, "dirs":["left"]}],
+		[{"type": "MOUNTAIN, "dirs":["left"]}],
+		[{"type": "MOUNTAIN, "dirs":["right"]}],
+		]
+	
+	]
+}
