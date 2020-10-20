@@ -9,19 +9,14 @@ public class Tile {
 	private LinkedList<Directions> dirs = new LinkedList<Directions>();
 	private TileType type;
 	private int x, y;
+	private Image img;
 	
 	public Tile(int x, int y, TileType type, LinkedList<Directions> dirs) {
 		this.dirs = dirs;
 		this.type = type;
 		this.x = x;
 		this.y = y;
-	}
-	
-	public Tile(int x, int y, TileType type, Directions ... dirs) {
-		for (Directions dir: dirs) this.dirs.add(dir);
-		this.type = type;
-		this.x = x;
-		this.y = y;
+		img = getImage();
 	}
 	
 	public boolean canMove(Directions dir) {
@@ -29,27 +24,27 @@ public class Tile {
 	}
 	
 	public void draw(GraphicsContext gc) {
-		gc.drawImage(getImage(), x * 32, y * 32, 32, 32);
+		gc.drawImage(img, x * 32, y * 32, 32, 32);
 	}
 	
 	private Image getImage() {
 		switch(type) {
 			case MOUNTAIN:
-				return new Image("Assets/Tiles/mountain.png");
+				return new Image("Assets/Tiles/Mountain.png");
 			case GRASS:
-				return new Image("Assets/Tiles/grass.png");
+				return new Image("Assets/Tiles/Grass.png");
 			case ROAD:
-				return new Image("Assets/Tiles/road.png");
+				return new Image("Assets/Tiles/Road.png");
 			case BUILDINGSMALL:
-				return new Image("Assets/Tiles/small_building.png");
+				return new Image("Assets/Tiles/BuildingSmall.png");
 			case BUILDINGLARGE:
-				return new Image("Assets/Tiles/large_building.png");
+				return new Image("Assets/Tiles/BuildingLarge.png");
 			case FOREST:
-				return new Image("Assets/Tiles/forest.png");
+				return new Image("Assets/Tiles/Forest.png");
 			case FARM:
-				return new Image("Assets/Tiles/farm.png");
+				return new Image("Assets/Tiles/Farm.png");
 			case FACTORY:
-				return new Image("Assets/Tiles/factory.png");
+				return new Image("Assets/Tiles/Factory.png");
 		}
 		return null;
  	}

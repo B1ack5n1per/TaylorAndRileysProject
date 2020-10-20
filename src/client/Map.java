@@ -60,6 +60,7 @@ public class Map {
 		case "Factory":
 			return TileType.FACTORY;
 		}
+		System.out.println(name);
 		return null;
 	}
 	
