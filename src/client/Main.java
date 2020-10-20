@@ -1,5 +1,9 @@
 package client;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 
 import org.json.simple.parser.JSONParser;
@@ -35,14 +39,14 @@ public class Main extends Application {
 	}
 	
 	@Override
-	public void start(Stage window) throws ParseException {
+	public void start(Stage window) throws ParseException, FileNotFoundException, IOException {
 		Object[] settings = LoginWindow.display();
 		username = (String) settings[0];
 		GameType gameType = (GameType) settings[1];
 		
 		switch(gameType) {
 			case LOCAL:
-				map = new Map((JSONObject) new JSONParser().parse("Assets/MapData.json"), LocalMenu.display());
+				map = new Map((JSONObject) new JSONParser().parse(new FileReader(new File("src/Assets/MapData.json").getAbsolutePath())), LocalMenu.display());
 				break;
 			case ONLINE:
 				break;
@@ -80,7 +84,7 @@ public class Main extends Application {
 				}
 				
 				// Update Canvas
-				gc.drawImage(new Image("Assets/bg.png"), 0, 0);
+				map.draw(gc);
 			}
 		};
 		timer.start();

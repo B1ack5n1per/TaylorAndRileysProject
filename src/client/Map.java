@@ -43,21 +43,21 @@ public class Map {
 	
 	private TileType getType(String name) {
 		switch(name) {
-		case "MOUNTAIN":
+		case "Mountain":
 			return TileType.MOUNTAIN;
-		case "GRASS":
+		case "Grass":
 			return TileType.GRASS;
-		case "ROAD":
+		case "Road":
 			return TileType.ROAD;
-		case "BUILDINGSMALL":
+		case "BuildingSmall":
 			return TileType.BUILDINGSMALL;
-		case "BUILDINGLARGE":
+		case "BuildingLarge":
 			return TileType.BUILDINGLARGE;
-		case "FOREST":
+		case "Forest":
 			return TileType.FOREST;
-		case "FARM":
+		case "Farm":
 			return TileType.FARM;
-		case "FACTORY":
+		case "Factory":
 			return TileType.FACTORY;
 		}
 		return null;
