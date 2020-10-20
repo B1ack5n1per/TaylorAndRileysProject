@@ -3,6 +3,7 @@ package client;
 import java.util.LinkedList;
 
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.json.simple.JSONObject;
 
 import javafx.animation.AnimationTimer;
@@ -34,14 +35,14 @@ public class Main extends Application {
 	}
 	
 	@Override
-	public void start(Stage window) {
+	public void start(Stage window) throws ParseException {
 		Object[] settings = LoginWindow.display();
 		username = (String) settings[0];
 		GameType gameType = (GameType) settings[1];
 		
 		switch(gameType) {
 			case LOCAL:
-				map = new Map((JSONObject) new JSONParser().parse("Assets/MapData.json")) ,LocalMenu.display()));
+				map = new Map((JSONObject) new JSONParser().parse("Assets/MapData.json"), LocalMenu.display());
 				break;
 			case ONLINE:
 				break;
