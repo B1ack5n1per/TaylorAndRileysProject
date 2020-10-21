@@ -22,7 +22,7 @@ public enum TankColor {
 			return BLUE;
 		case "red":
 			return RED;
+		}
+		return null;
 	}
-	return null;
-}
 }

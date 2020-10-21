@@ -12,7 +12,8 @@ public class Map {
 	public LinkedList<LinkedList<Tile>> tiles = new LinkedList<LinkedList<Tile>>();
 	public JSONArray spawns;
 	public Map(JSONObject obj, int mapId) {
-		JSONArray rows = (JSONArray) ((JSONArray) obj.get("maps")).get(mapId);
+		JSONObject map = (JSONObject) ((JSONArray) obj.get("maps")).get(mapId);
+		JSONArray rows = (JSONArray) map.get("tiles");
 		for (int i = 0; i < rows.size(); i++) {
 			JSONArray col = (JSONArray) rows.get(i);
 			tiles.add(new LinkedList<Tile>());
@@ -21,7 +22,7 @@ public class Map {
 			}
 		}
 		
-		spawns = new JSONArray();//(JSONArray) obj.get("spawns");
+		spawns = (JSONArray) map.get("spawns");
 	}
 	
 	private LinkedList<Directions> parseDirection(JSONArray dirs) {

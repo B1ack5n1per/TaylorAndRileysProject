@@ -75,7 +75,7 @@ public class Main extends Application {
 				.POST(HttpRequest.BodyPublisher.fromString(map.spawns.toJSONString()))
 				.build(),
 				HttpResponse.BodyHandler.asString()).body()));
-		
+		players.add(player);
 		// HUD
 		
 		// Chat Control

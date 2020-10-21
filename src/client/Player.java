@@ -9,25 +9,16 @@ public class Player {
 	public int x, y, id;
 	public TankColor color;
 	private Image img;
+	public Directions dir;
 	
-	public Player(int id, int x, int y, TankColor color) {
+	public Player(int id, int x, int y, TankColor color, Directions dir) {
 		this.id = id;
 		this.x = x;
 		this.y = y;
 		this.color = color;
+		this.dir = dir;
 		
-		switch(this.color) {
-			case BLACK: 
-				img = new Image("Assets/Tiles/Mountain.png");
-				break;
-			case BLUE: 
-				img = new Image("Assets/Tiles/Mountain.png");
-				break;
-			case RED: 
-				img = new Image("Assets/Tiles/Mountain.png");
-				break;
-			default:
-		}
+		img = new Image("Assets/Tanks" + TankColor.getString(color) + Directions.getString(dir));
 	}
 	
 	public Player(JSONObject obj) {
@@ -35,19 +26,9 @@ public class Player {
 		this.x = (int)((long) obj.get("x"));
 		this.y = (int)((long) obj.get("y"));
 		this.color = TankColor.getColor((String) obj.get("color"));
+		this.dir = Directions.getDirection((String) obj.get("dir"));
 		
-		switch(this.color) {
-			case BLACK: 
-				img = new Image("Assets/Tiles/Mountain.png");
-				break;
-			case BLUE: 
-				img = new Image("Assets/Tiles/Mountain.png");
-				break;
-			case RED: 
-				img = new Image("Assets/Tiles/Mountain.png");
-				break;
-			default:
-		}
+		img = new Image("Assets/Tanks/Tank" + TankColor.getString(color) + Directions.getString(dir) + ".png");
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -61,6 +42,6 @@ public class Player {
 	}
 	
 	public void draw(GraphicsContext gc) {
-		gc.drawImage(img, x * 32, y * 32);
+		gc.drawImage(img, x * Main.tileSize, y * Main.tileSize);
 	}
 }
