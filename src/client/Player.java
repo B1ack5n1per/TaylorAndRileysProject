@@ -31,9 +31,9 @@ public class Player {
 	}
 	
 	public Player(JSONObject obj) {
-		this.id = (int) obj.get("id");
-		this.x = (int) obj.get("x");
-		this.y = (int) obj.get("y");
+		this.id = (int)((long) obj.get("id"));
+		this.x = (int)((long) obj.get("x"));
+		this.y = (int)((long) obj.get("y"));
 		this.color = TankColor.getColor((String) obj.get("color"));
 		
 		switch(this.color) {
@@ -51,14 +51,13 @@ public class Player {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Override
-	public String toString() {
+	public JSONObject toJSON() {
 		JSONObject obj = new JSONObject();
 		obj.put("id", id);
 		obj.put("x", x);
 		obj.put("y", y);
 		obj.put("color", TankColor.getString(color));
-		return obj.toJSONString();
+		return obj;
 	}
 	
 	public void draw(GraphicsContext gc) {

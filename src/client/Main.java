@@ -63,13 +63,14 @@ public class Main extends Application {
 
 		
 		// Canvas
-		Canvas canvas = new Canvas(900, 600);
+		Canvas canvas = new Canvas(32 * 23, 32 * 17);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		
 		// Object Setup
 		LinkedList<Player> players = new LinkedList<Player>();
 		player = new Player((JSONObject) new JSONParser().parse(HttpClient.newHttpClient().send(HttpRequest.newBuilder()
 				.uri(new URI(HttpSettings.uri + "/join"))
+				.header("Content-Type", "application/json")
 				.POST(HttpRequest.BodyPublisher.fromString(map.spawns.toJSONString()))
 				.build(),
 				HttpResponse.BodyHandler.asString()).body()));
@@ -116,6 +117,8 @@ public class Main extends Application {
 
 		Scene scene = new Scene(container, width, height);
 		
+		//scene.setOnMouseClicked();
+		
 		window.widthProperty().addListener((obs, old, nw) -> width = (double) nw);
 		
 		window.heightProperty().addListener((obs, old, nw) -> height = (double) nw);
@@ -129,7 +132,8 @@ public class Main extends Application {
 		window.setOnCloseRequest(e -> {
 			try {
 				HttpClient.newHttpClient().send(HttpRequest.newBuilder()
-						.POST(HttpRequest.BodyPublisher.fromString(player.toString()))
+						.header("Content-Type", "application/json")
+						.POST(HttpRequest.BodyPublisher.fromString(player.toJSON().toJSONString()))
 						.uri(new URI(HttpSettings.uri + "/leave"))
 						.build(),
 						HttpResponse.BodyHandler.asString());

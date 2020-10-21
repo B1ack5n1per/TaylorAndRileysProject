@@ -21,7 +21,7 @@ public class Map {
 			}
 		}
 		
-		spawns = (JSONArray) obj.get("spawns");
+		spawns = new JSONArray();//(JSONArray) obj.get("spawns");
 	}
 	
 	private LinkedList<Directions> parseDirection(JSONArray dirs) {
@@ -69,5 +69,10 @@ public class Map {
 	
 	public void draw(GraphicsContext gc) {
 		for (LinkedList<Tile> list : tiles) for (Tile tile: list) tile.draw(gc);
+	}
+	
+	public Tile getTile(double x, double y) {
+		//for ()
+		return null;
 	}
 }

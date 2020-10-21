@@ -6,7 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Tile {
-	private LinkedList<Directions> dirs = new LinkedList<Directions>();
+	public LinkedList<Directions> dirs = new LinkedList<Directions>();
 	private TileType type;
 	private int x, y;
 	private Image img;
@@ -48,4 +48,5 @@ public class Tile {
 		}
 		return null;
  	}
+	
 }
