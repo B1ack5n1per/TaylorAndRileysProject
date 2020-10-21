@@ -18,7 +18,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -34,7 +33,9 @@ public class Main extends Application {
 	public static final HttpClient client = HttpClient.newHttpClient();
 	private static String username = "";
 	private static ChatController chatController;
-	public static double height = 600, width = 1200;
+	public static final double tileSize = 32;
+	public static final int tilesX = 23, tilesY = 17;
+	public static double height = tilesY * tileSize, width = tilesX * tileSize + 300;
 	public static Map map;
 	public static Player player;
 
@@ -117,7 +118,7 @@ public class Main extends Application {
 
 		Scene scene = new Scene(container, width, height);
 		
-		//scene.setOnMouseClicked();
+		scene.setOnMouseClicked(new ClickHandler(map));
 		
 		window.widthProperty().addListener((obs, old, nw) -> width = (double) nw);
 		

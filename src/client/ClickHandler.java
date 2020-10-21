@@ -18,7 +18,7 @@ public class ClickHandler implements EventHandler<MouseEvent> {
 	
 	@Override
 	public void handle(MouseEvent e) {
-		if (state == State.STANDBY) {
+		if (state == State.STANDBY && e.getSceneX() < Main.tilesX * Main.tileSize) {
 			System.out.println(map.getTile(e.getSceneX(), e.getSceneY()).dirs);
 		}
 	}

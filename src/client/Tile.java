@@ -7,8 +7,8 @@ import javafx.scene.image.Image;
 
 public class Tile {
 	public LinkedList<Directions> dirs = new LinkedList<Directions>();
+	public int x, y;
 	private TileType type;
-	private int x, y;
 	private Image img;
 	
 	public Tile(int x, int y, TileType type, LinkedList<Directions> dirs) {

@@ -36,6 +36,7 @@ public class Map {
 					break;
 				case "right":
 					res.add(Directions.RIGHT);
+					break;
 				case "left":
 					res.add(Directions.LEFT);
 					break;
@@ -72,7 +73,14 @@ public class Map {
 	}
 	
 	public Tile getTile(double x, double y) {
-		//for ()
+		for (int i = 0; i < tiles.size(); i++) {
+			for (int j = 0; j < tiles.get(i).size(); j++) {
+				Tile tile = tiles.get(i).get(j);
+				if (x > tile.x * Main.tileSize && x < tile.x * Main.tileSize + Main.tileSize && y > tile.y * Main.tileSize && y < tile.y * Main.tileSize + Main.tileSize) {
+					return tile;
+				}
+			}
+		}
 		return null;
 	}
 }
