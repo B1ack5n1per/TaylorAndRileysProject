@@ -10,6 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class Map {
 	public LinkedList<LinkedList<Tile>> tiles = new LinkedList<LinkedList<Tile>>();
+	public JSONArray spawns;
 	public Map(JSONObject obj, int mapId) {
 		JSONArray rows = (JSONArray) ((JSONArray) obj.get("maps")).get(mapId);
 		for (int i = 0; i < rows.size(); i++) {
@@ -19,6 +20,8 @@ public class Map {
 				tiles.get(i).add(new Tile(j, i, getType((String) ((JSONObject) col.get(j)).get("type")), parseDirection((JSONArray) ((JSONObject) col.get(j)).get("dirs"))));
 			}
 		}
+		
+		spawns = (JSONArray) obj.get("spawns");
 	}
 	
 	private LinkedList<Directions> parseDirection(JSONArray dirs) {

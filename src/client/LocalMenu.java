@@ -23,28 +23,28 @@ public class LocalMenu {
 		title.setFont(font);
 	
 		Button b1 = new Button();
-		ImageView map1 = new ImageView(new Image("Assets/BasicTestMap.png"));
+		ImageView map1 = new ImageView(new Image("Assets/Map1.png"));
 		map1.setFitWidth(BUTTONSIZE);
 		map1.setFitHeight(BUTTONSIZE);
 		b1.setGraphic(map1);
 		b1.setOnAction(new MapButtonHandler(0));
 	
 		Button b2 = new Button();
-		ImageView map2 = new ImageView(new Image("Assets/BasicTestMap.png"));
+		ImageView map2 = new ImageView(new Image("Assets/Map2.png"));
 		map2.setFitWidth(BUTTONSIZE);
 		map2.setFitHeight(BUTTONSIZE);
 		b2.setGraphic(map2);
 		b2.setOnAction(new MapButtonHandler(1));
 	
 		Button b3 = new Button();
-		ImageView map3 = new ImageView(new Image("Assets/BasicTestMap.png"));
+		ImageView map3 = new ImageView(new Image("Assets/Map3.png"));
 		map3.setFitWidth(BUTTONSIZE);
 		map3.setFitHeight(BUTTONSIZE);
 		b3.setGraphic(map3);
 		b3.setOnAction(new MapButtonHandler(2));
 	
 		Button b4 = new Button();
-		ImageView map4 = new ImageView(new Image("Assets/BasicTestMap.png"));
+		ImageView map4 = new ImageView(new Image("Assets/Map4.png"));
 		map4.setFitWidth(BUTTONSIZE);
 		map4.setFitHeight(BUTTONSIZE);
 		b4.setGraphic(map4);

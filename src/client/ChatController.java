@@ -12,8 +12,7 @@ import jdk.incubator.http.HttpResponse;
 
 public class ChatController implements Runnable {
 	private LinkedList<Message> messageQueue = new LinkedList<Message>(), messages = new LinkedList<Message>();
-	private boolean running;
-	private final String uri = "https://MenacingLemonchiffonInterpreter.b1ack5niper.repl.co";
+	private boolean running = true;
 	
 	public ChatController() {
 	}
@@ -21,38 +20,37 @@ public class ChatController implements Runnable {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
-		running = true;
-		while(running) {
-			try {
-				// Delay
-				Thread.sleep(100);
-				
-				// Send Messages
-				while (messageQueue.size() > 0) {
-					JSONObject data = new JSONObject();
-					data.put("name", messageQueue.getFirst().name);
-					data.put("msg", messageQueue.getFirst().msg);
-					HttpClient.newHttpClient().send(HttpRequest.newBuilder()
-							.header("Content-Type", "application/json")
-							.POST(HttpRequest.BodyPublisher.fromString(data.toJSONString()))
-							.uri(new URI(uri + "/message"))
-							.build(),
-							HttpResponse.BodyHandler.asString());
-					messageQueue.removeFirst();
-				}
-				
-				// Update Messages
-				JSONArray data = ((JSONArray) new JSONParser().parse(requestChat()));
-				messages.clear();
-				for (int i = 0; i < data.size(); i++) {
-					JSONObject obj = (JSONObject) data.get(i);
-					messages.add(new Message((String) obj.get("name"), (String) obj.get("msg")));
-				}
-				
-			} catch (Exception e) {
-				e.printStackTrace();
+		try {
+			// Delay
+			Thread.sleep(100);
+			
+			// Send Messages
+			while (messageQueue.size() > 0) {
+				JSONObject data = new JSONObject();
+				data.put("name", messageQueue.getFirst().name);
+				data.put("msg", messageQueue.getFirst().msg);
+				HttpClient.newHttpClient().send(HttpRequest.newBuilder()
+						.header("Content-Type", "application/json")
+						.POST(HttpRequest.BodyPublisher.fromString(data.toJSONString()))
+						.uri(new URI(HttpSettings.uri + "/message"))
+						.build(),
+						HttpResponse.BodyHandler.asString());
+				messageQueue.removeFirst();
 			}
+			
+			// Update Messages
+			JSONArray data = ((JSONArray) new JSONParser().parse(requestChat()));
+			messages.clear();
+			for (int i = 0; i < data.size(); i++) {
+				JSONObject obj = (JSONObject) data.get(i);
+				messages.add(new Message((String) obj.get("name"), (String) obj.get("msg")));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
+		if (running) run();
 	}
 	
 	public LinkedList<Message> getMessages() {
@@ -74,7 +72,7 @@ public class ChatController implements Runnable {
 			return HttpClient.newHttpClient().send(HttpRequest.newBuilder()
 					.header("Content-Type", "application/json")
 					.GET()
-					.uri(new URI(uri + "/messages"))
+					.uri(new URI(HttpSettings.uri + "/messages"))
 					.build(),
 					HttpResponse.BodyHandler.asString()).body();
 		} catch(Exception e) {
