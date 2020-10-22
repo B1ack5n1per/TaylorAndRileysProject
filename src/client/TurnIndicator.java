@@ -10,11 +10,14 @@ public class TurnIndicator extends Button {
 	
 	public TurnIndicator() {
 		super();
-		this.setWidth(Main.tileSize);
-		this.setHeight(Main.tileSize);
+		this.setMinWidth(Main.tileSize);
+		this.setMinHeight(Main.tileSize);
+		this.setMaxWidth(Main.tileSize);
+		this.setMaxHeight(Main.tileSize);
 		this.setDisable(true);
 		this.setMouseTransparent(true);
 		this.setFocusTraversable(false);
+		this.setAction(Actions.MOVE);
 	}
 	
 	public void setAction(Actions action) {

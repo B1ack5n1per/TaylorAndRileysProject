@@ -22,14 +22,14 @@ public class ChatController implements Runnable {
 	public void run() {
 		try {
 			// Delay
-			Thread.sleep(100);
+			Thread.sleep(1000);
 			
 			// Send Messages
 			while (messageQueue.size() > 0) {
 				JSONObject data = new JSONObject();
 				data.put("name", messageQueue.getFirst().name);
 				data.put("msg", messageQueue.getFirst().msg);
-				HttpClient.newHttpClient().send(HttpRequest.newBuilder()
+				Main.client.send(HttpRequest.newBuilder()
 						.header("Content-Type", "application/json")
 						.POST(HttpRequest.BodyPublisher.fromString(data.toJSONString()))
 						.uri(new URI(HttpSettings.uri + "/message"))
@@ -47,7 +47,8 @@ public class ChatController implements Runnable {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			messages.add(new Message("System", "Chat Disconnected"));
+			running = false;
 		}
 		
 		if (running) run();
@@ -69,7 +70,7 @@ public class ChatController implements Runnable {
 	
 	private String requestChat() {
 		try {
-			return HttpClient.newHttpClient().send(HttpRequest.newBuilder()
+			return Main.client.send(HttpRequest.newBuilder()
 					.header("Content-Type", "application/json")
 					.GET()
 					.uri(new URI(HttpSettings.uri + "/messages"))

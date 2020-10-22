@@ -71,7 +71,7 @@ public class Main extends Application {
 		
 		// Object Setup
 		LinkedList<Player> players = new LinkedList<Player>();
-		player = new Player((JSONObject) new JSONParser().parse(HttpClient.newHttpClient().send(HttpRequest.newBuilder()
+		player = new Player((JSONObject) new JSONParser().parse(client.send(HttpRequest.newBuilder()
 				.uri(new URI(HttpSettings.uri + "/join"))
 				.header("Content-Type", "application/json")
 				.POST(HttpRequest.BodyPublisher.fromString(map.spawns.toJSONString()))
@@ -81,7 +81,7 @@ public class Main extends Application {
 		
 		// HUD
 		TurnBox turns = new TurnBox();
-		turns.setPadding(new Insets(0, 0, 0, 8));
+		turns.setPadding(new Insets(16, 0, 0, 16));
 		
 		HBox hud = new HBox();
 		hud.getChildren().addAll(canvas, turns);
@@ -145,7 +145,7 @@ public class Main extends Application {
 		
 		window.setOnCloseRequest(e -> {
 			try {
-				HttpClient.newHttpClient().send(HttpRequest.newBuilder()
+				client.send(HttpRequest.newBuilder()
 						.header("Content-Type", "application/json")
 						.POST(HttpRequest.BodyPublisher.fromString(player.toJSON().toJSONString()))
 						.uri(new URI(HttpSettings.uri + "/leave"))
