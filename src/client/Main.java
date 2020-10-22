@@ -15,13 +15,14 @@ import org.json.simple.JSONObject;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jdk.incubator.http.HttpClient;
@@ -35,9 +36,10 @@ public class Main extends Application {
 	private static ChatController chatController;
 	public static final double tileSize = 32;
 	public static final int tilesX = 23, tilesY = 17;
-	public static double height = tilesY * tileSize, width = tilesX * tileSize + 300;
+	public static double height = tilesY * tileSize, width = tilesX * tileSize + 300 + 2 * tileSize;
 	public static Map map;
 	public static Player player;
+	public static int moves = 7;
 
 	
 	public static void main(String[] args) {
@@ -76,7 +78,17 @@ public class Main extends Application {
 				.build(),
 				HttpResponse.BodyHandler.asString()).body()));
 		players.add(player);
+		
 		// HUD
+		TurnBox turns = new TurnBox();
+		turns.setPadding(new Insets(0, 0, 0, 8));
+		
+		HBox hud = new HBox();
+		hud.getChildren().addAll(canvas, turns);
+		hud.setMinSize(canvas.getWidth() + 2 * tileSize, canvas.getHeight());
+		hud.setAlignment(Pos.CENTER_LEFT);
+		hud.setPadding(new Insets(-8, 0, 0, 0));
+		
 		
 		// Chat Control
 		chatController = new ChatController();
@@ -109,11 +121,12 @@ public class Main extends Application {
 			}
 		};
 		timer.start();
-		
 
-		BorderPane container = new BorderPane();
-		container.setRight(chat);
-		container.setCenter(canvas);
+		HBox container = new HBox();
+		container.getChildren().addAll(hud, chat);
+		container.setAlignment(Pos.CENTER_RIGHT);
+		container.setBackground(new Background(new BackgroundFill(Color.web("#333"), new CornerRadii(0), new Insets(0))));
+		
 	
 
 		Scene scene = new Scene(container, width, height);
