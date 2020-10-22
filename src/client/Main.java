@@ -142,6 +142,13 @@ public class Main extends Application {
 		window.setResizable(false);
 		window.show();
 		
+		client.send(HttpRequest.newBuilder()
+				.uri(new URI(HttpSettings.uri + "/confirm"))
+				.POST(HttpRequest.BodyPublisher.fromString(player.toJSON().toJSONString()))
+				.header("Content-Type", "application/json")
+				.build(),
+				HttpResponse.BodyHandler.asString());
+		
 		
 		window.setOnCloseRequest(e -> {
 			try {
