@@ -1,5 +1,7 @@
 package client;
 
+import java.util.LinkedList;
+
 import org.json.simple.JSONObject;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -7,6 +9,7 @@ import javafx.scene.image.Image;
 
 public class Player {
 	public int x, y, id;
+	public LinkedList<int[]> lines = new LinkedList<int[]>();
 	public TankColor color;
 	private Image img;
 	public Directions dir;
@@ -25,15 +28,22 @@ public class Player {
 		this.id = (int)((long) obj.get("id"));
 		this.x = (int)((long) obj.get("x"));
 		this.y = (int)((long) obj.get("y"));
+		lines.add(new int[] {x, y});
 		this.color = TankColor.getColor((String) obj.get("color"));
 		this.dir = Directions.getDirection((String) obj.get("dir"));
 		
-		img = new Image("Assets/Tanks/Tank" + TankColor.getString(color) + Directions.getString(dir) + ".png");
+		img = new Image(FileSettings.assets + "/Tanks/Tank" + TankColor.getString(color) + Directions.getString(dir) + ".png");
 	}
 	
 	public void changeDir(Directions dir) {
 		this.dir = dir;
-		img = new Image("Assets/Tanks/Tank" + TankColor.getString(color) + Directions.getString(dir) + ".png");
+		img = new Image(FileSettings.assets + "/Tanks/Tank" + TankColor.getString(color) + Directions.getString(dir) + ".png");
+	}
+	
+	public void move(int x, int y) {
+		this.x += x;
+		this.y += y;
+		lines.add(new int[] {this.x, this.y});
 	}
 	
 	@SuppressWarnings("unchecked")

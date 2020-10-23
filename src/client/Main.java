@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
-import java.util.function.Function;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -22,8 +21,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jdk.incubator.http.HttpClient;
@@ -37,7 +38,7 @@ public class Main extends Application {
 	private static ChatController chatController;
 	public static final double tileSize = 32;
 	public static final int tilesX = 23, tilesY = 17;
-	public static double height = tilesY * tileSize + 100, width = tilesX * tileSize + 300 + 2 * tileSize;
+	public static double height = tilesY * tileSize + 128, width = tilesX * tileSize + 300 + 2 * tileSize;
 	public static Map map;
 	public static Player player;
 	public static int moves = 7;
@@ -67,11 +68,11 @@ public class Main extends Application {
 				return;	
 		}
 		
-
-		
 		// Canvas
 		Canvas canvas = new Canvas(32 * 23, 32 * 17);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
+		gc.setLineWidth(4);
+		gc.setStroke(Color.CYAN);
 		
 		// Object Setup
 		LinkedList<Player> players = new LinkedList<Player>();
@@ -87,12 +88,15 @@ public class Main extends Application {
 		turns = new TurnBox();
 		turns.setPadding(new Insets(16, 0, 0, 0));
 		
-		HBox hud = new HBox();
-		hud.getChildren().addAll(canvas, turns);
-		hud.setMinSize(width - 300, height);
-		hud.setAlignment(Pos.BASELINE_LEFT);
-		hud.setPadding(new Insets(-8, 0, 0, 0));
+		Controls control = new Controls(map);
 		
+		BorderPane canvasContainer = new BorderPane();
+		canvasContainer.setCenter(canvas);
+		canvasContainer.setRight(turns);
+		canvasContainer.setMinSize(width - 300, height - 128);
+		
+		VBox hud = new VBox();
+		hud.getChildren().addAll(canvasContainer, control);
 		
 		// Chat Control
 		chatController = new ChatController();
@@ -149,6 +153,9 @@ public class Main extends Application {
 				
 				// Update Canvas
 				map.draw(gc);
+				for (int i = 0; i < player.lines.size() - 1; i++) {
+					gc.strokeLine(player.lines.get(i)[0] * tileSize + tileSize / 2, player.lines.get(i)[1] * tileSize + tileSize / 2, player.lines.get(i + 1)[0] * tileSize + tileSize / 2, player.lines.get(i + 1)[1] * tileSize + tileSize / 2);
+				}
 				for (Player play: players) play.draw(gc);
 			}
 		};

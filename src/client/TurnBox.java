@@ -31,8 +31,15 @@ public class TurnBox extends VBox {
 		});
 	}
 	
-	public void add(ActionData action) {
-		for (TurnIndicator turn: turns) if (turn.action == new ActionData(Actions.NONE)) turn.setAction(action);
+	public boolean add(ActionData action) {
+		for (TurnIndicator turn: turns) {
+			if (turn.action.action == Actions.NONE) {
+				turn.setAction(action);
+				return true;
+			}
+		}
+		return true;
+		//return false;
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -10,10 +10,8 @@ public class TurnIndicator extends Button {
 	
 	public TurnIndicator() {
 		super();
-		this.setMinWidth(Main.tileSize);
-		this.setMinHeight(Main.tileSize);
-		this.setMaxWidth(Main.tileSize);
-		this.setMaxHeight(Main.tileSize);
+		this.setMinSize(Main.tileSize, Main.tileSize);
+		this.setMaxSize(Main.tileSize, Main.tileSize);
 		this.setDisable(true);
 		this.setMouseTransparent(true);
 		this.setFocusTraversable(false);
@@ -23,7 +21,7 @@ public class TurnIndicator extends Button {
 		this.action = action;
 		this.set = true;
 		this.setDisable(false);
-		this.setGraphic(new ImageView(new Image(FileSettings.assets + "Actions/" + Actions.getString(action.action) + ".png")));
+		this.setGraphic(new ImageView(new Image(FileSettings.assets + "/Actions/" + Actions.getString(action.action) + ".png")));
 	}
 	
 	
@@ -31,6 +29,7 @@ public class TurnIndicator extends Button {
 		this.action = new ActionData(Actions.NONE);
 		this.set = false;
 		this.setDisable(true);
+		this.setGraphic(new ImageView());
 	}
 	
 	
