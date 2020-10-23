@@ -12,8 +12,8 @@ public enum Actions {
 			case SHOOT:
 				return "shoot";
 			default:
+				return "none";
 		}
-		return null;
 	}
 	
 	public static Actions getAction(String action) {
@@ -24,9 +24,9 @@ public enum Actions {
 				return WAIT;
 			case "shoot":
 				return SHOOT;
-				default:
+			default:
+				return NONE;
 		}
-		return null;
 	}
 	
 	
