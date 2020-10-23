@@ -30,21 +30,21 @@ public class Tile {
 	private Image getImage() {
 		switch(type) {
 			case MOUNTAIN:
-				return new Image("Assets/Tiles/Mountain.png");
+				return new Image(FileSettings.assets + "/Tiles/Mountain.png");
 			case GRASS:
-				return new Image("Assets/Tiles/Grass.png");
+				return new Image(FileSettings.assets + "/Tiles/Grass.png");
 			case ROAD:
-				return new Image("Assets/Tiles/Road.png");
+				return new Image(FileSettings.assets + "/Tiles/Road.png");
 			case BUILDINGSMALL:
-				return new Image("Assets/Tiles/BuildingSmall.png");
+				return new Image(FileSettings.assets + "/Tiles/BuildingSmall.png");
 			case BUILDINGLARGE:
-				return new Image("Assets/Tiles/BuildingLarge.png");
+				return new Image(FileSettings.assets + "/Tiles/BuildingLarge.png");
 			case FOREST:
-				return new Image("Assets/Tiles/Forest.png");
+				return new Image(FileSettings.assets + "/Tiles/Forest.png");
 			case FARM:
-				return new Image("Assets/Tiles/Farm.png");
+				return new Image(FileSettings.assets + "/Tiles/Farm.png");
 			case FACTORY:
-				return new Image("Assets/Tiles/Factory.png");
+				return new Image(FileSettings.assets + "/Tiles/Factory.png");
 		}
 		return null;
  	}

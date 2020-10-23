@@ -19,6 +19,7 @@ public class TurnBox extends VBox {
 			turns.add(new TurnIndicator());
 			this.getChildren().add(turns.get(i));
 		}
+		this.setMinWidth(Main.tileSize * 2);
 		this.getChildren().add(ready);
 		this.setAlignment(Pos.BASELINE_CENTER);
 		this.setSpacing(8);
@@ -30,12 +31,16 @@ public class TurnBox extends VBox {
 		});
 	}
 	
+	public void add(ActionData action) {
+		for (TurnIndicator turn: turns) if (turn.action == new ActionData(Actions.NONE)) turn.setAction(action);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public JSONArray toJSONArray() {
 		JSONArray arr = new JSONArray();
 		for (TurnIndicator turn: turns) {
-			if (turn.action == Actions.NONE) turn.setAction(Actions.WAIT);
-			arr.add(Actions.getString(turn.action));
+			if (turn.action.action == Actions.NONE) turn.setAction(new ActionData(Actions.WAIT));
+			arr.add(turn.action.toJSON());
 		}
 		return arr;
 	}

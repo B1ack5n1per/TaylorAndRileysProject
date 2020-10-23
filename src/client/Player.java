@@ -31,6 +31,11 @@ public class Player {
 		img = new Image("Assets/Tanks/Tank" + TankColor.getString(color) + Directions.getString(dir) + ".png");
 	}
 	
+	public void changeDir(Directions dir) {
+		this.dir = dir;
+		img = new Image("Assets/Tanks/Tank" + TankColor.getString(color) + Directions.getString(dir) + ".png");
+	}
+	
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON() {
 		JSONObject obj = new JSONObject();

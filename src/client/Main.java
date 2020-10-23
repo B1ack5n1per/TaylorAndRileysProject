@@ -37,12 +37,13 @@ public class Main extends Application {
 	private static ChatController chatController;
 	public static final double tileSize = 32;
 	public static final int tilesX = 23, tilesY = 17;
-	public static double height = tilesY * tileSize, width = tilesX * tileSize + 300 + 2 * tileSize;
+	public static double height = tilesY * tileSize + 100, width = tilesX * tileSize + 300 + 2 * tileSize;
 	public static Map map;
 	public static Player player;
 	public static int moves = 7;
 	public static boolean ready = false;
 	public static long timeIn = 0;
+	public static TurnBox turns;
 
 	
 	public static void main(String[] args) {
@@ -83,13 +84,13 @@ public class Main extends Application {
 		players.add(player);
 		
 		// HUD
-		TurnBox turns = new TurnBox();
-		turns.setPadding(new Insets(16, 0, 0, 16));
+		turns = new TurnBox();
+		turns.setPadding(new Insets(16, 0, 0, 0));
 		
 		HBox hud = new HBox();
 		hud.getChildren().addAll(canvas, turns);
-		hud.setMinSize(canvas.getWidth() + 2 * tileSize, canvas.getHeight());
-		hud.setAlignment(Pos.CENTER_LEFT);
+		hud.setMinSize(width - 300, height);
+		hud.setAlignment(Pos.BASELINE_LEFT);
 		hud.setPadding(new Insets(-8, 0, 0, 0));
 		
 		

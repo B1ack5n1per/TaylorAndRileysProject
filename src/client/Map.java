@@ -84,4 +84,7 @@ public class Map {
 		}
 		return null;
 	}
+	public Tile getTile(int x, int y) {
+		return tiles.get(y).get(x);
+	}
 }
