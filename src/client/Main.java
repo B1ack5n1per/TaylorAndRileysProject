@@ -81,13 +81,12 @@ public class Main extends Application {
 		
 		// HUD
 		TurnBox turns = new TurnBox();
-		turns.setPadding(new Insets(16, 0, 0, 16));
+		turns.setPadding(new Insets(0, 0, 0, 8));
 		
 		HBox hud = new HBox();
 		hud.getChildren().addAll(canvas, turns);
 		hud.setMinSize(canvas.getWidth() + 2 * tileSize, canvas.getHeight());
 		hud.setAlignment(Pos.CENTER_LEFT);
-		hud.setPadding(new Insets(-8, 0, 0, 0));
 		
 		
 		// Chat Control
