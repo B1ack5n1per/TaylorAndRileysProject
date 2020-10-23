@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class TurnIndicator extends Button {
-	public Actions action;
+	public Actions action = Actions.NONE;
 	public boolean set = false;
 	
 	public TurnIndicator() {
@@ -17,7 +17,6 @@ public class TurnIndicator extends Button {
 		this.setDisable(true);
 		this.setMouseTransparent(true);
 		this.setFocusTraversable(false);
-		this.setAction(Actions.MOVE);
 	}
 	
 	public void setAction(Actions action) {

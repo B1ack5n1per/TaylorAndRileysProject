@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
+import java.util.function.Function;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -40,6 +41,8 @@ public class Main extends Application {
 	public static Map map;
 	public static Player player;
 	public static int moves = 7;
+	public static boolean ready = false;
+	public static long timeIn = 0;
 
 	
 	public static void main(String[] args) {
@@ -99,7 +102,9 @@ public class Main extends Application {
 		// Animation Timer
 		AnimationTimer timer = new AnimationTimer() {
 			private boolean editing = false;
+			private boolean updating = false;
 			
+			@SuppressWarnings("unchecked")
 			@Override
 			public void handle(long time) {
 				// Update Messages
@@ -113,6 +118,32 @@ public class Main extends Application {
 						chat.messages.getChildren().add(msgList.get(i));
 					}
 					editing = false;
+				}
+				
+				if (ready) {
+					timeIn = time;
+					ready = false;
+					updating = true;
+				}
+				if (time - timeIn > 1 && updating) {
+					timeIn = time;
+					updating = false;
+					String res;
+					JSONObject data = new JSONObject();
+					data.put("player", Main.player.toJSON());
+					data.put("moves", turns.toJSONArray());
+					try {
+						res = Main.client.send(HttpRequest.newBuilder()
+							.uri(new URI(HttpSettings.uri + "/move"))
+							.POST(HttpRequest.BodyPublisher.fromString(data.toJSONString()))
+							.header("Content-Type", "application/json")
+							.build(),
+							HttpResponse.BodyHandler.asString()).body();
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					turns.ready.setDisable(false);
+					turns.ready.setText("Ready");
 				}
 				
 				// Update Canvas
