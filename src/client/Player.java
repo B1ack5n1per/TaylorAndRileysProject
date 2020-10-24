@@ -60,6 +60,7 @@ public class Player {
 		obj.put("x", x);
 		obj.put("y", y);
 		obj.put("color", TankColor.getString(color));
+		obj.put("dir", Directions.getString(dir));
 		return obj;
 	}
 	

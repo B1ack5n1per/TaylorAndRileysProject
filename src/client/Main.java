@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javafx.animation.AnimationTimer;
@@ -134,27 +135,46 @@ public class Main extends Application {
 					updating = true;
 				}
 				if (time - timeIn > 1 && updating) {
-					timeIn = time;
-					updating = false;
-					String res;
-					JSONObject data = new JSONObject();
-					data.put("player", Main.player.toJSON());
-					data.put("moves", turns.toJSONArray());
 					try {
+						timeIn = time;
+						updating = false;
+						
+						// Http Request Setup
+						String res = "";
+						JSONObject data = new JSONObject();
+						data.put("player", Main.player.toJSON());
+						data.put("moves", turns.toJSONArray());
+						
+						// Http Request
 						res = Main.client.send(HttpRequest.newBuilder()
-							.uri(new URI(HttpSettings.uri + "/move"))
+							.uri(new URI(HttpSettings.uri + "/ready"))
 							.POST(HttpRequest.BodyPublisher.fromString(data.toJSONString()))
 							.header("Content-Type", "application/json")
 							.build(),
 							HttpResponse.BodyHandler.asString()).body();
+						System.out.println(res);
+						// Handle Data
+						JSONObject resData = (JSONObject) new JSONParser().parse(res);
+						JSONArray resPlayers = (JSONArray) resData.get("players");
+						players.clear();
+						players.add(player);
+						for (int i = 0; i < resPlayers.size(); i++) {
+							JSONObject obj = (JSONObject) resPlayers.get(i);
+							if ((int)((long) obj.get( "id")) != player.id) {
+								players.add(new Player(obj));
+							}
+						}
+						
+						// HUD Reset
+						control.ready.setDisable(false);
+						control.ready.setText("Ready");
+						turns.clear();
+						player.clearLines();
+						control.ready.requestFocus();
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
-					control.ready.setDisable(false);
-					control.ready.setText("Ready");
-					turns.clear();
-					player.clearLines();
-					control.ready.requestFocus();
+					
 				}
 				
 				// Test User Input
@@ -229,14 +249,6 @@ public class Main extends Application {
 		window.setTitle("Game");
 		window.setResizable(false);
 		window.show();
-		
-		client.send(HttpRequest.newBuilder()
-				.uri(new URI(HttpSettings.uri + "/confirm"))
-				.POST(HttpRequest.BodyPublisher.fromString(player.toJSON().toJSONString()))
-				.header("Content-Type", "application/json")
-				.build(),
-				HttpResponse.BodyHandler.asString());
-		
 		
 		window.setOnCloseRequest(e -> {
 			try {
