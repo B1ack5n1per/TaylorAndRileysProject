@@ -40,10 +40,17 @@ public class Player {
 		img = new Image(FileSettings.assets + "/Tanks/Tank" + TankColor.getString(color) + Directions.getString(dir) + ".png");
 	}
 	
+	public void clearLines() {
+		lines.clear();
+		lines.add(new int[] {x, y});
+	}
+	
 	public void move(int x, int y) {
-		this.x += x;
-		this.y += y;
-		lines.add(new int[] {this.x, this.y});
+		if (Main.turns.add(new ActionData(Actions.MOVE, this.x + x, this.y + y))) {
+			this.x += x;
+			this.y += y;
+			lines.add(new int[] {this.x, this.y});
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

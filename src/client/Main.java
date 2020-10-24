@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -19,6 +20,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -45,6 +47,7 @@ public class Main extends Application {
 	public static boolean ready = false;
 	public static long timeIn = 0;
 	public static TurnBox turns;
+	public static LinkedList<KeyCode> keys = new LinkedList<KeyCode>();
 
 	
 	public static void main(String[] args) {
@@ -147,16 +150,51 @@ public class Main extends Application {
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
-					turns.ready.setDisable(false);
-					turns.ready.setText("Ready");
+					control.ready.setDisable(false);
+					control.ready.setText("Ready");
+					turns.clear();
+					player.clearLines();
+					control.ready.requestFocus();
+				}
+				
+				// Test User Input
+				if (keys.contains(KeyCode.W)) {
+					keys.remove(KeyCode.W);
+					Tile playerTile = map.getTile(player.x, player.y);
+					if (player.dir == Directions.UP && playerTile.canMove(Directions.UP)) player.move(0, -1);
+					else player.changeDir(Directions.UP);
+				}
+				if (keys.contains(KeyCode.A)) {
+					keys.remove(KeyCode.A);
+					Tile playerTile = map.getTile(player.x, player.y);
+					if (player.dir == Directions.LEFT && playerTile.canMove(Directions.LEFT)) player.move(-1, 0);
+					else player.changeDir(Directions.LEFT);
+				}
+				if (keys.contains(KeyCode.S)) {
+					keys.remove(KeyCode.S);
+					Tile playerTile = map.getTile(player.x, player.y);
+					if (player.dir == Directions.DOWN && playerTile.canMove(Directions.DOWN)) player.move(0, 1);
+					else player.changeDir(Directions.DOWN);
+				}
+				if (keys.contains(KeyCode.D)) {
+					keys.remove(KeyCode.D);
+					Tile playerTile = map.getTile(player.x, player.y);
+					if (player.dir == Directions.RIGHT && playerTile.canMove(Directions.RIGHT)) player.move(1, 0);
+					else player.changeDir(Directions.RIGHT);
 				}
 				
 				// Update Canvas
 				map.draw(gc);
 				for (int i = 0; i < player.lines.size() - 1; i++) {
-					gc.strokeLine(player.lines.get(i)[0] * tileSize + tileSize / 2, player.lines.get(i)[1] * tileSize + tileSize / 2, player.lines.get(i + 1)[0] * tileSize + tileSize / 2, player.lines.get(i + 1)[1] * tileSize + tileSize / 2);
+					double x1 = player.lines.get(i)[0] * tileSize + tileSize / 2;
+					double y1 = player.lines.get(i)[1] * tileSize + tileSize / 2;
+					double x2 = player.lines.get(i + 1)[0] * tileSize + tileSize / 2;
+					double y2 = player.lines.get(i + 1)[1] * tileSize + tileSize / 2;
+							
+					gc.strokeLine(x1, y1, x2, y2);
 				}
 				for (Player play: players) play.draw(gc);
+				
 			}
 		};
 		timer.start();
@@ -165,12 +203,23 @@ public class Main extends Application {
 		container.getChildren().addAll(hud, chat);
 		container.setAlignment(Pos.CENTER_RIGHT);
 		container.setBackground(new Background(new BackgroundFill(Color.web("#333"), new CornerRadii(0), new Insets(0))));
-		
 	
 
 		Scene scene = new Scene(container, width, height);
+		scene.setOnMouseClicked(e -> {
+			if (e.getSceneX() < width - 300) canvas.requestFocus();
+		});
 		
-		scene.setOnMouseClicked(new ClickHandler(map));
+		scene.setOnKeyPressed(e -> {
+			keys.add(e.getCode());
+		});
+		scene.setOnKeyReleased(e -> {
+			try {
+				keys.remove(e.getCode());
+			} catch(NoSuchElementException err) {
+				
+			}
+		});
 		
 		window.widthProperty().addListener((obs, old, nw) -> width = (double) nw);
 		

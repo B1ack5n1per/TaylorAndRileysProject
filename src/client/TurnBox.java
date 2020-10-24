@@ -5,13 +5,11 @@ import java.util.LinkedList;
 import org.json.simple.JSONArray;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
 public class TurnBox extends VBox {
 	
 	private LinkedList<TurnIndicator> turns = new LinkedList<TurnIndicator>();
-	public Button ready = new Button("Ready");
 	
 	public TurnBox() {
 		super();
@@ -20,15 +18,10 @@ public class TurnBox extends VBox {
 			this.getChildren().add(turns.get(i));
 		}
 		this.setMinWidth(Main.tileSize * 2);
-		this.getChildren().add(ready);
 		this.setAlignment(Pos.BASELINE_CENTER);
 		this.setSpacing(8);
 		
-		ready.setOnAction(e -> {
-			ready.setDisable(true);
-			ready.setText("Waiting");
-			Main.ready = true;
-		});
+		
 	}
 	
 	public boolean add(ActionData action) {
@@ -38,8 +31,13 @@ public class TurnBox extends VBox {
 				return true;
 			}
 		}
-		return true;
-		//return false;
+		return false;
+	}
+	
+	public void clear() {
+		for (TurnIndicator turn: turns) {
+			turn.setAction(new ActionData(Actions.NONE));
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
