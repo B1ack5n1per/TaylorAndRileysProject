@@ -17,6 +17,7 @@ public class ActionData {
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON() {
 		JSONObject obj = new JSONObject();
+		obj.put("action", Actions.getString(action));
 		if (x1 != null) obj.put("x1", x1);
 		if (y1 != null) obj.put("y1", y1);
 		if (x2 != null) obj.put("x2", x2);

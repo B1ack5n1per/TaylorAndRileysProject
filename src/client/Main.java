@@ -143,7 +143,7 @@ public class Main extends Application {
 						String res = "";
 						JSONObject data = new JSONObject();
 						data.put("player", Main.player.toJSON());
-						data.put("moves", turns.toJSONArray());
+						data.put("turns", turns.toJSONArray());
 						
 						// Http Request
 						res = Main.client.send(HttpRequest.newBuilder()
