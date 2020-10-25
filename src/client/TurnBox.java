@@ -36,7 +36,7 @@ public class TurnBox extends VBox {
 	
 	public void clear() {
 		for (TurnIndicator turn: turns) {
-			turn.setAction(new ActionData(Actions.NONE));
+			turn.setAction(new ActionData(Actions.NONE, Directions.NONE));
 		}
 	}
 	
@@ -44,7 +44,7 @@ public class TurnBox extends VBox {
 	public JSONArray toJSONArray() {
 		JSONArray arr = new JSONArray();
 		for (TurnIndicator turn: turns) {
-			if (turn.action.action == Actions.NONE) turn.setAction(new ActionData(Actions.WAIT));
+			if (turn.action.action == Actions.NONE) turn.setAction(new ActionData(Actions.WAIT, Directions.NONE));
 			arr.add(turn.action.toJSON());
 		}
 		return arr;

@@ -49,7 +49,9 @@ public class Main extends Application {
 	public static long timeIn = 0;
 	public static TurnBox turns;
 	public static LinkedList<KeyCode> keys = new LinkedList<KeyCode>();
-
+	public static GameState state = GameState.PLAY;
+	public static LinkedList<LinkedList<PreformableAction>> turnData = new LinkedList<LinkedList<PreformableAction>>();
+	public static LinkedList<Projectile> projectiles = new LinkedList<Projectile>();
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -85,7 +87,7 @@ public class Main extends Application {
 				.header("Content-Type", "application/json")
 				.POST(HttpRequest.BodyPublisher.fromString(map.spawns.toJSONString()))
 				.build(),
-				HttpResponse.BodyHandler.asString()).body()));
+				HttpResponse.BodyHandler.asString()).body()), false);
 		players.add(player);
 		
 		// HUD
@@ -110,8 +112,17 @@ public class Main extends Application {
 		
 		// Animation Timer
 		AnimationTimer timer = new AnimationTimer() {
-			private boolean editing = false;
-			private boolean updating = false;
+			private boolean editing = false, updating = false, animating = false;
+			private long animateTarget;
+			
+			private void getAnimationTarget(Long curTime) {
+				long minTime = 0;
+				for (int i = 0; i < turnData.size(); i++) {
+					long testTime = Actions.getTime(turnData.get(i).get(0).action);
+					if (testTime > minTime) minTime = testTime;
+				}
+				animateTarget = curTime + minTime;
+			}
 			
 			@SuppressWarnings("unchecked")
 			@Override
@@ -152,18 +163,27 @@ public class Main extends Application {
 							.header("Content-Type", "application/json")
 							.build(),
 							HttpResponse.BodyHandler.asString()).body();
-						System.out.println(res);
+						
 						// Handle Data
 						JSONObject resData = (JSONObject) new JSONParser().parse(res);
 						JSONArray resPlayers = (JSONArray) resData.get("players");
+						turnData.clear();
 						players.clear();
-						players.add(player);
 						for (int i = 0; i < resPlayers.size(); i++) {
 							JSONObject obj = (JSONObject) resPlayers.get(i);
-							if ((int)((long) obj.get( "id")) != player.id) {
-								players.add(new Player(obj));
+							Player newPlayer = new Player(obj, true);
+							if ((int)((long) obj.get("id")) == player.id) player = newPlayer;
+							players.add(newPlayer);
+							LinkedList<PreformableAction> actions = new LinkedList<PreformableAction>();
+							JSONArray actionData = (JSONArray) obj.get("turns");
+							for (int j = 0; j < actionData.size(); j++) {
+								actions.add(new PreformableAction((JSONObject) actionData.get(j), newPlayer));
 							}
+							turnData.add(actions);
+							
 						}
+						
+						state = GameState.ANIMATE;
 						
 						// HUD Reset
 						control.ready.setDisable(false);
@@ -178,29 +198,31 @@ public class Main extends Application {
 				}
 				
 				// Test User Input
-				if (keys.contains(KeyCode.W)) {
-					keys.remove(KeyCode.W);
-					Tile playerTile = map.getTile(player.x, player.y);
-					if (player.dir == Directions.UP && playerTile.canMove(Directions.UP)) player.move(0, -1);
-					else player.changeDir(Directions.UP);
-				}
-				if (keys.contains(KeyCode.A)) {
-					keys.remove(KeyCode.A);
-					Tile playerTile = map.getTile(player.x, player.y);
-					if (player.dir == Directions.LEFT && playerTile.canMove(Directions.LEFT)) player.move(-1, 0);
-					else player.changeDir(Directions.LEFT);
-				}
-				if (keys.contains(KeyCode.S)) {
-					keys.remove(KeyCode.S);
-					Tile playerTile = map.getTile(player.x, player.y);
-					if (player.dir == Directions.DOWN && playerTile.canMove(Directions.DOWN)) player.move(0, 1);
-					else player.changeDir(Directions.DOWN);
-				}
-				if (keys.contains(KeyCode.D)) {
-					keys.remove(KeyCode.D);
-					Tile playerTile = map.getTile(player.x, player.y);
-					if (player.dir == Directions.RIGHT && playerTile.canMove(Directions.RIGHT)) player.move(1, 0);
-					else player.changeDir(Directions.RIGHT);
+				if (state == GameState.PLAY) {
+					if (keys.contains(KeyCode.W)) {
+						keys.remove(KeyCode.W);
+						Tile playerTile = map.getTile(player.x, player.y);
+						if (player.dir == Directions.UP && playerTile.canMove(Directions.UP)) player.move(0, -1);
+						else player.changeDir(Directions.UP);
+					}
+					if (keys.contains(KeyCode.A)) {
+						keys.remove(KeyCode.A);
+						Tile playerTile = map.getTile(player.x, player.y);
+						if (player.dir == Directions.LEFT && playerTile.canMove(Directions.LEFT)) player.move(-1, 0);
+						else player.changeDir(Directions.LEFT);
+					}
+					if (keys.contains(KeyCode.S)) {
+						keys.remove(KeyCode.S);
+						Tile playerTile = map.getTile(player.x, player.y);
+						if (player.dir == Directions.DOWN && playerTile.canMove(Directions.DOWN)) player.move(0, 1);
+						else player.changeDir(Directions.DOWN);
+					}
+					if (keys.contains(KeyCode.D)) {
+						keys.remove(KeyCode.D);
+						Tile playerTile = map.getTile(player.x, player.y);
+						if (player.dir == Directions.RIGHT && playerTile.canMove(Directions.RIGHT)) player.move(1, 0);
+						else player.changeDir(Directions.RIGHT);
+					}
 				}
 				
 				// Update Canvas
@@ -213,8 +235,27 @@ public class Main extends Application {
 							
 					gc.strokeLine(x1, y1, x2, y2);
 				}
-				for (Player play: players) play.draw(gc);
 				
+				if (state == GameState.ANIMATE) {
+					if (!animating) {
+						if (turnData.get(0).size() > 0) {
+							getAnimationTarget(time);
+							for (LinkedList<PreformableAction> actionList: turnData) {
+								actionList.get(0).perform();
+								actionList.removeFirst();
+								System.out.println(actionList);
+							}
+						} else {
+							state = GameState.PLAY;
+						}
+					}
+					if (animateTarget > time) animating = true;
+					else animating = false;
+					
+				}
+				
+				for (Player play: players) play.draw(gc);
+				for (Projectile proj: projectiles) proj.draw(gc);
 			}
 		};
 		timer.start();

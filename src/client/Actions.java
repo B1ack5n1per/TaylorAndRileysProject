@@ -29,5 +29,18 @@ public enum Actions {
 		}
 	}
 	
+	public static long getTime(Actions action) {
+		switch(action) {
+		case MOVE:
+			return 1000000000L;
+		case WAIT:
+			return 1000000000L;
+		case SHOOT:
+			return 10000000000L;
+		default:
+			return 0;
+		}
+	}
+	
 	
 }

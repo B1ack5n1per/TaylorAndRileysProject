@@ -14,7 +14,7 @@ public class TurnIndicator extends Button {
 		this.setMaxSize(Main.tileSize, Main.tileSize);
 		this.setMouseTransparent(true);
 		this.setFocusTraversable(false);
-		setAction(new ActionData(Actions.NONE));
+		setAction(new ActionData(Actions.NONE, Directions.NONE));
 	}
 	
 	public void setAction(ActionData action) {
@@ -32,7 +32,7 @@ public class TurnIndicator extends Button {
 	
 	
 	public void clear() {
-		this.action = new ActionData(Actions.NONE);
+		this.action = new ActionData(Actions.NONE, Directions.NONE);
 		this.set = false;
 		this.setDisable(true);
 		this.setGraphic(new ImageView());

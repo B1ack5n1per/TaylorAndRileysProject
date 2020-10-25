@@ -65,33 +65,35 @@ public class Controls extends HBox {
 		Button fire = new Button("Fire");
 		fire.setFont(font);
 		fire.setOnAction(e -> {
-			int x1 = Main.player.x, y1 = Main.player.y;
-			int x2 = x1, y2 = y1;
-			Directions dir = Main.player.dir;
-			while(map.getTile(x2, y2).canMove(dir)) {
-				switch (dir) {
-					case UP:
-						y2--;
-						break;
-					case DOWN:
-						y2++;
-						break;
-					case LEFT:
-						x2--;
-						break;
-					case RIGHT:
-						x2++;
-					default:
-						break;
+			if (Main.state == GameState.PLAY) {
+				int x1 = Main.player.x, y1 = Main.player.y;
+				int x2 = x1, y2 = y1;
+				Directions dir = Main.player.dir;
+				while(map.getTile(x2, y2).canMove(dir)) {
+					switch (dir) {
+						case UP:
+							y2--;
+							break;
+						case DOWN:
+							y2++;
+							break;
+						case LEFT:
+							x2--;
+							break;
+						case RIGHT:
+							x2++;
+						default:
+							break;
+					}
 				}
+				Main.turns.add(new ActionData(Actions.SHOOT, dir, x1, y1, x2, y2));
 			}
-			Main.turns.add(new ActionData(Actions.SHOOT, x1, y1, x2, y2));
 		});
 		
 		Button wait = new Button("Wait");
 		wait.setFont(font);
 		wait.setOnAction(e -> {
-			Main.turns.add(new ActionData(Actions.WAIT));
+			Main.turns.add(new ActionData(Actions.WAIT, Directions.NONE));
 		});
 
 		ready.setFont(font);
@@ -107,27 +109,28 @@ public class Controls extends HBox {
 	}
 	
 	private void dirClick(Directions dir) {
-		Tile playerTile = map.getTile(Main.player.x, Main.player.y);
-		
-		if (playerTile.canMove(dir)) {
-			switch (dir) {
-				case UP:
-					Main.player.move(0, -1);
-					Main.player.changeDir(dir);
-					break;
-				case DOWN:
-					Main.player.move(0, 1);
-					Main.player.changeDir(dir);
-					break;
-				case LEFT:
-					Main.player.move(-1, 0);
-					Main.player.changeDir(dir);
-					break;
-				case RIGHT:
-					Main.player.move(1, 0);
-					Main.player.changeDir(dir);
-				default:
-					break;
+		if (Main.state == GameState.PLAY) {
+			Tile playerTile = map.getTile(Main.player.x, Main.player.y);
+			if (playerTile.canMove(dir)) {
+				switch (dir) {
+					case UP:
+						Main.player.move(0, -1);
+						Main.player.changeDir(dir);
+						break;
+					case DOWN:
+						Main.player.move(0, 1);
+						Main.player.changeDir(dir);
+						break;
+					case LEFT:
+						Main.player.move(-1, 0);
+						Main.player.changeDir(dir);
+						break;
+					case RIGHT:
+						Main.player.move(1, 0);
+						Main.player.changeDir(dir);
+					default:
+						break;
+				}
 			}
 		}
 	}
