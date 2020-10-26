@@ -58,8 +58,9 @@ public class Main extends Application {
 		launch(args);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public void start(Stage window) throws ParseException, FileNotFoundException, IOException, InterruptedException, URISyntaxException {
+	public void start(Stage window) throws ParseException, IOException {
 		Object[] settings = LoginWindow.display();
 		username = (String) settings[0];
 		GameType gameType = (GameType) settings[1];
@@ -82,12 +83,20 @@ public class Main extends Application {
 		gc.setStroke(Color.CYAN);
 		
 		// Object Setup
-		player = new Player((JSONObject) new JSONParser().parse(client.send(HttpRequest.newBuilder()
-				.uri(new URI(HttpSettings.uri + "/join"))
-				.header("Content-Type", "application/json")
-				.POST(HttpRequest.BodyPublisher.fromString(map.spawns.toJSONString()))
-				.build(),
-				HttpResponse.BodyHandler.asString()).body()), false);
+		JSONObject startData = new JSONObject();
+		startData.put("map", map.id);
+		startData.put("spawns", map.spawns);
+		try {
+			player = new Player((JSONObject) new JSONParser().parse(client.send(HttpRequest.newBuilder()
+					.uri(new URI(HttpSettings.uri + "/join"))
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublisher.fromString(startData.toJSONString()))
+					.build(),
+					HttpResponse.BodyHandler.asString()).body()), false);
+		} catch(Exception e) {
+			Window.display("Sorry, server unresponsive please restart the application", 18);
+			return;
+		}
 		players.add(player);
 		
 		// HUD
@@ -124,7 +133,6 @@ public class Main extends Application {
 				animateTarget = curTime + minTime;
 			}
 			
-			@SuppressWarnings("unchecked")
 			@Override
 			public void handle(long time) {
 				// Update Messages
@@ -155,6 +163,7 @@ public class Main extends Application {
 						JSONObject data = new JSONObject();
 						data.put("player", Main.player.toJSON());
 						data.put("turns", turns.toJSONArray());
+						data.put("map", map.id);
 						
 						// Http Request
 						res = Main.client.send(HttpRequest.newBuilder()
@@ -169,6 +178,7 @@ public class Main extends Application {
 						JSONArray resPlayers = (JSONArray) resData.get("players");
 						turnData.clear();
 						players.clear();
+						projectiles.clear();
 						for (int i = 0; i < resPlayers.size(); i++) {
 							JSONObject obj = (JSONObject) resPlayers.get(i);
 							Player newPlayer = new Player(obj, true);
@@ -237,7 +247,7 @@ public class Main extends Application {
 					gc.strokeLine(x1, y1, x2, y2);
 				}
 				
-				if (state == GameState.ANIMATE) {
+				if (state == GameState.ANIMATE || state == GameState.STANDBY) {
 					if (!animating) {
 						if (turnData.get(0).size() > 0) {
 							getAnimationTarget(time);
@@ -248,7 +258,7 @@ public class Main extends Application {
 							}
 							
 						} else {
-							state = GameState.PLAY;
+							if (state == GameState.ANIMATE) state = GameState.PLAY;
 							turns.clear();
 						}
 					}
@@ -262,8 +272,12 @@ public class Main extends Application {
 					
 				}
 				
-				if (!player.isAlive) state = GameState.STANDBY;
-				if (state == GameState.STANDBY && turns.isVisible()) turns.setVisible(false); 
+				if (!player.isAlive) {
+					window.close();
+					Window.display("Game Over", 56);
+					this.stop();
+				}
+				
 				
 				for (Player play: players) play.draw(gc);
 				for (Projectile proj: projectiles) proj.draw(gc);
@@ -305,9 +319,12 @@ public class Main extends Application {
 		
 		window.setOnCloseRequest(e -> {
 			try {
+				JSONObject leaveData = new JSONObject();
+				leaveData.put("player", player.toJSON().toJSONString());
+				leaveData.put("map", map.id);
 				client.send(HttpRequest.newBuilder()
 						.header("Content-Type", "application/json")
-						.POST(HttpRequest.BodyPublisher.fromString(player.toJSON().toJSONString()))
+						.POST(HttpRequest.BodyPublisher.fromString(leaveData.toJSONString()))
 						.uri(new URI(HttpSettings.uri + "/leave"))
 						.build(),
 						HttpResponse.BodyHandler.asString());

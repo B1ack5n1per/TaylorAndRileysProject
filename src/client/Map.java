@@ -11,7 +11,9 @@ import javafx.scene.canvas.GraphicsContext;
 public class Map {
 	public LinkedList<LinkedList<Tile>> tiles = new LinkedList<LinkedList<Tile>>();
 	public JSONArray spawns;
+	public int id;
 	public Map(JSONObject obj, int mapId) {
+		this.id = mapId;
 		JSONObject map = (JSONObject) ((JSONArray) obj.get("maps")).get(mapId);
 		JSONArray rows = (JSONArray) map.get("tiles");
 		for (int i = 0; i < rows.size(); i++) {
