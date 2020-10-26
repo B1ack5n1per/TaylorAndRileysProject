@@ -50,6 +50,7 @@ public class Main extends Application {
 	public static TurnBox turns;
 	public static LinkedList<KeyCode> keys = new LinkedList<KeyCode>();
 	public static GameState state = GameState.PLAY;
+	public static LinkedList<Player> players = new LinkedList<Player>();
 	public static LinkedList<LinkedList<PreformableAction>> turnData = new LinkedList<LinkedList<PreformableAction>>();
 	public static LinkedList<Projectile> projectiles = new LinkedList<Projectile>();
 	
@@ -81,7 +82,6 @@ public class Main extends Application {
 		gc.setStroke(Color.CYAN);
 		
 		// Object Setup
-		LinkedList<Player> players = new LinkedList<Player>();
 		player = new Player((JSONObject) new JSONParser().parse(client.send(HttpRequest.newBuilder()
 				.uri(new URI(HttpSettings.uri + "/join"))
 				.header("Content-Type", "application/json")
@@ -172,14 +172,16 @@ public class Main extends Application {
 						for (int i = 0; i < resPlayers.size(); i++) {
 							JSONObject obj = (JSONObject) resPlayers.get(i);
 							Player newPlayer = new Player(obj, true);
-							if ((int)((long) obj.get("id")) == player.id) player = newPlayer;
 							players.add(newPlayer);
-							LinkedList<PreformableAction> actions = new LinkedList<PreformableAction>();
-							JSONArray actionData = (JSONArray) obj.get("turns");
-							for (int j = 0; j < actionData.size(); j++) {
-								actions.add(new PreformableAction((JSONObject) actionData.get(j), newPlayer));
+							if (newPlayer.isAlive) {
+								if ((int)((long) obj.get("id")) == player.id) player = newPlayer;
+								LinkedList<PreformableAction> actions = new LinkedList<PreformableAction>();
+								JSONArray actionData = (JSONArray) obj.get("turns");
+								for (int j = 0; j < actionData.size(); j++) {
+									actions.add(new PreformableAction((JSONObject) actionData.get(j), newPlayer));
+								}
+								turnData.add(actions);
 							}
-							turnData.add(actions);
 							
 						}
 						
@@ -188,7 +190,6 @@ public class Main extends Application {
 						// HUD Reset
 						control.ready.setDisable(false);
 						control.ready.setText("Ready");
-						turns.clear();
 						player.clearLines();
 						control.ready.requestFocus();
 					} catch (Exception e1) {
@@ -240,22 +241,33 @@ public class Main extends Application {
 					if (!animating) {
 						if (turnData.get(0).size() > 0) {
 							getAnimationTarget(time);
+							turns.highlightNext();
 							for (LinkedList<PreformableAction> actionList: turnData) {
 								actionList.get(0).perform();
 								actionList.removeFirst();
-								System.out.println(actionList);
 							}
+							
 						} else {
 							state = GameState.PLAY;
+							turns.clear();
 						}
 					}
 					if (animateTarget > time) animating = true;
-					else animating = false;
+					else  {
+						animating = false;
+						player.xi = player.x;
+						player.yi = player.y;
+						projectiles.clear();
+					}
 					
 				}
 				
+				if (!player.isAlive) state = GameState.STANDBY;
+				if (state == GameState.STANDBY && turns.isVisible()) turns.setVisible(false); 
+				
 				for (Player play: players) play.draw(gc);
 				for (Projectile proj: projectiles) proj.draw(gc);
+				
 			}
 		};
 		timer.start();

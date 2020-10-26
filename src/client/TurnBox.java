@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 public class TurnBox extends VBox {
 	
 	private LinkedList<TurnIndicator> turns = new LinkedList<TurnIndicator>();
+	private int highlighted = 0;
 	
 	public TurnBox() {
 		super();
@@ -28,6 +29,7 @@ public class TurnBox extends VBox {
 		for (TurnIndicator turn: turns) {
 			if (turn.action.action == Actions.NONE) {
 				turn.setAction(action);
+				turn.setDisable(false);
 				return true;
 			}
 		}
@@ -37,7 +39,17 @@ public class TurnBox extends VBox {
 	public void clear() {
 		for (TurnIndicator turn: turns) {
 			turn.setAction(new ActionData(Actions.NONE, Directions.NONE));
+			turn.setDisable(true);
 		}
+	}
+	
+	public void highlightNext() {
+		if (highlighted >= turns.size()) highlighted = 0;
+		for (int i = 0; i < turns.size(); i++) {
+			if (i != highlighted) turns.get(i).setDisable(true);
+			else turns.get(i).setDisable(false);
+		}
+		highlighted++;
 	}
 	
 	@SuppressWarnings("unchecked")

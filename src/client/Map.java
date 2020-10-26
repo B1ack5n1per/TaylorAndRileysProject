@@ -65,7 +65,6 @@ public class Map {
 		case "Factory":
 			return TileType.FACTORY;
 		}
-		System.out.println(name);
 		return null;
 	}
 	
@@ -77,7 +76,7 @@ public class Map {
 		for (int i = 0; i < tiles.size(); i++) {
 			for (int j = 0; j < tiles.get(i).size(); j++) {
 				Tile tile = tiles.get(i).get(j);
-				if (x > tile.x * Main.tileSize && x < tile.x * Main.tileSize + Main.tileSize && y > tile.y * Main.tileSize && y < tile.y * Main.tileSize + Main.tileSize) {
+				if (x >= tile.x * Main.tileSize && x < tile.x * Main.tileSize + Main.tileSize && y >= tile.y * Main.tileSize && y < tile.y * Main.tileSize + Main.tileSize) {
 					return tile;
 				}
 			}

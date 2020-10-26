@@ -23,7 +23,7 @@ public class TurnIndicator extends Button {
 		this.setDisable(false);
 		if (action.action == Actions.NONE) {
 			this.setDisable(true);
-			this.setGraphic(new ImageView());
+			this.setGraphic(new ImageView(new Image(FileSettings.assets + "/Actions/blank.png")));
 		} else {
 			this.setDisable(false);
 			this.setGraphic(new ImageView(new Image(FileSettings.assets + "/Actions/" + Actions.getString(action.action) + ".png")));

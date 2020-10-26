@@ -69,6 +69,22 @@ public class Controls extends HBox {
 				int x1 = Main.player.x, y1 = Main.player.y;
 				int x2 = x1, y2 = y1;
 				Directions dir = Main.player.dir;
+				switch (dir) {
+					case UP:
+						y1--;
+						break;
+					case DOWN:
+						y1++;
+						break;
+					case LEFT:
+						x1--;
+						break;
+					case RIGHT:
+						x1++;
+						break;
+					default:
+						break;
+				}
 				while(map.getTile(x2, y2).canMove(dir)) {
 					switch (dir) {
 						case UP:
@@ -82,6 +98,7 @@ public class Controls extends HBox {
 							break;
 						case RIGHT:
 							x2++;
+							break;
 						default:
 							break;
 					}
@@ -93,14 +110,16 @@ public class Controls extends HBox {
 		Button wait = new Button("Wait");
 		wait.setFont(font);
 		wait.setOnAction(e -> {
-			Main.turns.add(new ActionData(Actions.WAIT, Directions.NONE));
+			if (Main.state == GameState.PLAY) Main.turns.add(new ActionData(Actions.WAIT, Directions.NONE));
 		});
 
 		ready.setFont(font);
 		ready.setOnAction(e -> {
-			ready.setDisable(true);
-			ready.setText("Waiting");
-			Main.ready = true;
+			if (Main.state == GameState.PLAY) {
+				ready.setDisable(true);
+				ready.setText("Waiting");
+				Main.ready = true;
+			}
 		});
 		
 		this.getChildren().addAll(arrows, fire, wait, ready);
