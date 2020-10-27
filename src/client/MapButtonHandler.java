@@ -13,8 +13,8 @@ public class MapButtonHandler implements EventHandler<ActionEvent> {
 	
 	@Override
 	public void handle(ActionEvent e) {
-		LocalMenu.mapId = mapId;
-		LocalMenu.window.close();
+		MapSelection.mapId = mapId;
+		MapSelection.window.close();
 	}
 
 }

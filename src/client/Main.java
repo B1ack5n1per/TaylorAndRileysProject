@@ -1,11 +1,9 @@
 package client;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
@@ -61,20 +59,10 @@ public class Main extends Application {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void start(Stage window) throws ParseException, IOException {
-		Object[] settings = LoginWindow.display();
-		username = (String) settings[0];
-		GameType gameType = (GameType) settings[1];
+		username = LoginWindow.display();
+		if (username == null) return;
+		map = new Map((JSONObject) new JSONParser().parse(new FileReader(new File("src/Assets/MapData.json").getAbsolutePath())), MapSelection.display());
 		
-		
-		switch(gameType) {
-			case LOCAL:
-				map = new Map((JSONObject) new JSONParser().parse(new FileReader(new File("src/Assets/MapData.json").getAbsolutePath())), LocalMenu.display());
-				break;
-			case ONLINE:
-				break;
-			default:
-				return;	
-		}
 		
 		// Canvas
 		Canvas canvas = new Canvas(32 * 23, 32 * 17);
@@ -86,6 +74,7 @@ public class Main extends Application {
 		JSONObject startData = new JSONObject();
 		startData.put("map", map.id);
 		startData.put("spawns", map.spawns);
+		startData.put("username", username);
 		try {
 			player = new Player((JSONObject) new JSONParser().parse(client.send(HttpRequest.newBuilder()
 					.uri(new URI(HttpSettings.uri + "/join"))
@@ -94,6 +83,7 @@ public class Main extends Application {
 					.build(),
 					HttpResponse.BodyHandler.asString()).body()), false);
 		} catch(Exception e) {
+			e.printStackTrace();
 			Window.display("Sorry, server unresponsive please restart the application", 18);
 			return;
 		}
@@ -243,7 +233,9 @@ public class Main extends Application {
 					double y1 = player.lines.get(i)[1] * tileSize + tileSize / 2;
 					double x2 = player.lines.get(i + 1)[0] * tileSize + tileSize / 2;
 					double y2 = player.lines.get(i + 1)[1] * tileSize + tileSize / 2;
-							
+
+					gc.setLineWidth(4);
+					gc.setStroke(Color.CYAN);
 					gc.strokeLine(x1, y1, x2, y2);
 				}
 				
@@ -318,18 +310,19 @@ public class Main extends Application {
 		window.show();
 		
 		window.setOnCloseRequest(e -> {
+			chatController.stop();
+			timer.stop();
 			try {
 				JSONObject leaveData = new JSONObject();
-				leaveData.put("player", player.toJSON().toJSONString());
+				leaveData.put("player", player.toJSON());
 				leaveData.put("map", map.id);
-				client.send(HttpRequest.newBuilder()
+				client.sendAsync(HttpRequest.newBuilder()
 						.header("Content-Type", "application/json")
 						.POST(HttpRequest.BodyPublisher.fromString(leaveData.toJSONString()))
 						.uri(new URI(HttpSettings.uri + "/leave"))
 						.build(),
 						HttpResponse.BodyHandler.asString());
 			} catch (Exception e1) {}
-			chatController.stop();
 		});
 	}
 }

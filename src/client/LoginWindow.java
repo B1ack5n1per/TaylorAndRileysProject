@@ -14,10 +14,9 @@ import javafx.stage.Stage;
 
 public class LoginWindow {
 	private static String username = null;
-	private static GameType game = GameType.NONE;
 	private final static double BUTTONSIZE = 300;
 	
-	public static Object[] display() {
+	public static String display() {
 		Stage window = new Stage();
 		
 		VBox menuContainer = new VBox();
@@ -33,44 +32,23 @@ public class LoginWindow {
 		userInput.getChildren().addAll(name, input);
 		userInput.setPadding(new Insets(16));
 		
-		Button local = new Button("     Local \n Multiplayer");
 		Button online = new Button("    Online \n Multiplayer");
-		Button settings = new Button("Settings \n  Menu");
 
 		Font font = new Font("Arial", 30);
-		local.setFont(font);
 		online.setFont(font);
-		settings.setFont(font);
 
-		local.setContentDisplay(ContentDisplay.TOP);
 		online.setContentDisplay(ContentDisplay.TOP);
-		settings.setContentDisplay(ContentDisplay.TOP);
 
-		local.setMaxWidth(BUTTONSIZE);
-		local.maxHeight(BUTTONSIZE);
 		online.setMaxWidth(BUTTONSIZE);
 		online.maxHeight(BUTTONSIZE);
-		settings.setMinWidth(190);
 		
-		local.setOnAction(e -> {
-			if (input.getText().length() > 0) {
-				username = input.getText();
-				game = GameType.LOCAL;
-				window.close();
-			}
-		});
 		online.setOnAction(e -> {
 			if (input.getText().length() > 0) {
 				username = input.getText();
-				game = GameType.ONLINE;
 				window.close();
 			}
 		});
-		settings.setOnAction(e -> {
-			
-		});
-		
-		menuList.getChildren().addAll(local, online, settings);
+		menuList.getChildren().add(online);
 		menuList.setAlignment(Pos.CENTER);
 
 		menuContainer.getChildren().addAll(userInput, menuList);
@@ -82,6 +60,6 @@ public class LoginWindow {
 		window.setTitle("Tank Trouble");
 		window.setResizable(false);
 		window.showAndWait();
-		return new Object[] {username, game};
+		return username;
 	}
 }

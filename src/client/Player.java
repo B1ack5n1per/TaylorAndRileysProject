@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import jdk.incubator.http.HttpRequest;
 import jdk.incubator.http.HttpResponse;
 
@@ -16,25 +17,16 @@ public class Player {
 	public int x, y, id, xi, yi;
 	public LinkedList<int[]> lines = new LinkedList<int[]>();
 	public TankColor color;
+	public boolean isAlive = true;
+	public String username;
 	private Image img;
 	public Directions dir;
-	public boolean isAlive = true;
-	
-	public Player(int id, int x, int y, TankColor color, Directions dir) {
-		this.id = id;
-		this.x = x;
-		this.y = y;
-		this.xi = x;
-		this.yi = y;
-		this.color = color;
-		this.dir = dir;
-		
-		img = new Image("Assets/Tanks" + TankColor.getString(color) + Directions.getString(dir));
-	}
+	private double textWidth = 5.5;
 	
 	public Player(JSONObject obj, boolean useInit) {
 		this.id = (int) ((long) obj.get("id"));
 		this.isAlive = (boolean) obj.get("alive");
+		this.username = (String) obj.get("username");
 		if (useInit) {
 			this.x = (int) ((long) obj.get("xi"));
 			this.y = (int) ((long) obj.get("yi"));
@@ -99,10 +91,14 @@ public class Player {
 		obj.put("color", TankColor.getString(color));
 		obj.put("dir", Directions.getString(dir));
 		obj.put("alive", isAlive);
+		obj.put("username", username);
 		return obj;
 	}
 	
 	public void draw(GraphicsContext gc) {
 		gc.drawImage(img, x * Main.tileSize, y * Main.tileSize);
+		gc.setLineWidth(1);
+		gc.setStroke(Color.BLACK);
+		gc.strokeText(username, x * Main.tileSize + Main.tileSize / 2 - username.length() * textWidth / 2 , y * Main.tileSize - 8);
 	}
 }
