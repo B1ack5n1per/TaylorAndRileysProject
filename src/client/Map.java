@@ -6,8 +6,6 @@ import org.json.simple.JSONObject;
 
 import javafx.scene.canvas.GraphicsContext;
 
-
-
 public class Map {
 	public LinkedList<LinkedList<Tile>> tiles = new LinkedList<LinkedList<Tile>>();
 	public JSONArray spawns;

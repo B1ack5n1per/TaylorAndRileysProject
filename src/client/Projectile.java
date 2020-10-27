@@ -38,9 +38,11 @@ public class Projectile {
 		}
 		if (moved) gc.drawImage(img, x1, y1);
 		Tile location = Main.map.getTile(x1, y1);
-		for (Player player: Main.players) {
-			if (player.x == location.x && player.y == location.y) {
-				player.kill();
+		if (location != null) {
+			for (Player player: Main.players) {
+				if (player.x == location.x && player.y == location.y) {
+					player.kill();
+				}
 			}
 		}
 	}
