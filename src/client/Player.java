@@ -46,13 +46,17 @@ public class Player {
 		else img = new Image(FileSettings.assets + "/Tanks/dead.png");
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void kill() {
 		this.isAlive = false;
 		this.img = new Image(FileSettings.assets + "/Tanks/dead.png");
 		try{
+			
+			JSONObject data = toJSON();
+			data.put("map", Main.map.id);
 			Main.client.send(HttpRequest.newBuilder()
 					.uri(new URI(HttpSettings.uri + "/kill"))
-					.POST(HttpRequest.BodyPublisher.fromString(this.toJSON().toJSONString()))
+					.POST(HttpRequest.BodyPublisher.fromString(data.toJSONString()))
 					.header("Content-Type", "application/json")
 					.build(),
 					HttpResponse.BodyHandler.asString());
