@@ -40,7 +40,7 @@ public class Projectile {
 		Tile location = Main.map.getTile(x1, y1);
 		if (location != null) {
 			for (Player player: Main.players) {
-				if (player.x == location.x && player.y == location.y) {
+				if (player.x == location.x && player.y == location.y && player.isAlive) {
 					player.kill();
 				}
 			}
